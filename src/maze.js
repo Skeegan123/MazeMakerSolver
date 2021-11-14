@@ -5,8 +5,8 @@ let current;
 
 class Maze {
     constructor(rows, columns) {
-        this.vertSize = rows * 25;
-        this.horizSize = columns * 25;
+        this.horizSize = 1000;
+        this.vertSize = (this.horizSize / columns) * rows;
         this.columns = columns;
         this.rows = rows;
         this.grid = [];
@@ -38,7 +38,7 @@ class Maze {
             }
         }
 
-        let next = current.checkNeighbors();
+        let next = current.checkNeighbors(this.rows, this.columns);
 
         if (next) {
             next.visited = true;
@@ -82,15 +82,15 @@ class Cell {
         }
     }
 
-    checkNeighbors() {
+    checkNeighbors(rows, columns) {
         let grid = this.parentGrid;
         let row = this.rowNum;
         let col = this.colNum;
         let neighbours = [];
 
         let top = row !== 0 ? grid[row - 1][col] : undefined;
-        let right = col !== grid.length - 1 ? grid[row][col + 1] : undefined;
-        let bottom = row !== grid[0].length - 1 ? grid[row + 1][col] : undefined;
+        let right = col !== columns - 1 ? grid[row][col + 1] : undefined;
+        let bottom = row !== rows - 1 ? grid[row + 1][col] : undefined;
         let left = col !== 0 ? grid[row][col - 1] : undefined;
 
         if (top && !top.visited) neighbours.push(top);
