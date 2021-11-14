@@ -11,6 +11,7 @@ class Maze {
         this.rows = rows;
         this.grid = [];
         this.stack = [];
+        this.setup();
     }
 
     setup() {
@@ -23,6 +24,7 @@ class Maze {
             this.grid.push(row);
         }
         current = this.grid[0][0];
+        this.draw();
     }
 
     draw() {
@@ -190,6 +192,12 @@ class Cell {
     }
 }
 
-let newMaze = new Maze(25, 25);
-newMaze.setup();
-newMaze.draw();
+// let r = document.getElementById("rows").value;
+// let c = document.getElementById("columns").value;
+
+// console.log(r);
+// console.log(c);
+
+// let newMaze = new Maze(10, 10);
+// newMaze.setup();
+// newMaze.draw();
