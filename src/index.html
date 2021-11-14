@@ -10,12 +10,15 @@
     </head>
     <body>
         <h1>MAZE MAKER</h1>
-        <label for="rows">Rows:</label>
-        <input id="rows" name="rows" type="number" step="5" min="5" max="150" value="10" required>
-        <label for="columns">Columns:</label>
-        <input id="columns" name="columns" type="number" step="5" min="5" max="150" value="10" required>
-        <br>
-        <button onclick="newMaze = new Maze(document.getElementById('rows').value, document.getElementById('columns').value)">Create Maze</button>
+        <div class="form">
+            <label for="rows">Rows:</label>
+                <input id="rows" name="rows" type="number" step="5" min="5" max="150" value="10" required>
+            <label for="columns">Columns:</label>
+                <input id="columns" name="columns" type="number" step="5" min="5" max="150" value="10" required>
+            <br>
+            <br>
+            <button onclick="newMaze = new Maze(document.getElementById('rows').value, document.getElementById('columns').value)">Create Maze</button>
+        </div>
         <br>
         <canvas class="maze"></canvas>
 
