@@ -66,6 +66,111 @@ class Maze {
             this.draw();
         })
     }
+
+    aStar() {
+        let start = this.grid[0][0];
+        let end = this.grid[this.rows - 1][this.columns - 1];
+        let open = [start];
+        let closed = [];
+        let k = 0;
+
+        
+
+        for (let r = 0; r < this.rows; r++) {
+            for (let c = 0; c < this.columns; c++) {
+                this.grid[r][c].visited = false;
+                this.grid[r][c].fValue = Infinity;
+                this.grid[r][c].gValue = Infinity;
+            }
+        }
+
+        start.fValue = 0;
+        start.gValue = 0;
+
+        while(open.length !== 0) {
+        // while(k < 30) {
+            k++;
+            current = open[0]
+
+            // if (open.length === 1) {
+            // } else {
+                for (let i = 0; i < open.length - 1; i++) {
+                    if (open[i].fValue < current.fValue) {
+                        current = open[i];
+                        ////console.log(current.fValue);
+                    }
+                }
+            // }
+            open.splice(open.indexOf(current), 1);
+
+            // //console.log(current);
+            // closed.push(current);
+            // //console.log("closed");
+            // //console.log(closed);
+
+            current.visited = true;
+
+            // console.log(current.colNum + ", " + current.rowNum)
+
+            let neighbors = current.checkNeighborsAStar(this.rows, this.columns);
+
+            if (neighbors === undefined) {
+                // //console.log("undefined");
+            } else {
+
+            //console.log(neighbors)
+
+            for (let j = 0; j <= neighbors.length - 1; j++) {
+                if (neighbors[j] === end) {
+                    neighbors[j].parent = current;
+                    console.log("found target!")
+                    return this.reconstructPath(start, end);
+                } else if (open.includes(neighbors[j]) && open[open.indexOf(neighbors[j])].fValue < neighbors[j].fValue) {
+                    //console.log("check 1");
+                } else if (closed.includes(neighbors[j]) && closed[closed.indexOf(neighbors[j])].fValue < neighbors[j].fValue) {
+                    //console.log("check 2");
+                } else {
+                    neighbors[j].parent = current;
+                    neighbors[j].gValue = current.gValue + 10;
+                    neighbors[j].hValue = (Math.abs(neighbors[j].rowNum - end.rowNum) + Math.abs(neighbors[j].colNum - end.colNum)) * 10;
+                    neighbors[j].fValue = neighbors[j].gValue + neighbors[j].hValue;
+                    //console.log(neighbors[j].gValue);
+                    open.push(neighbors[j]);
+                    //console.log("open");
+                    //console.log(open);
+                    window.requestAnimationFrame(() => {
+                        neighbors[j].highlightAStar(this.rows, this.columns);
+                    })
+                }
+            }
+        }
+
+            //console.log(current);
+            closed.push(current);
+            //console.log("closed");
+            //console.log(closed);
+            
+        }
+    }
+
+    reconstructPath(start, end) {
+        let finalPath = [];
+        let next = end.parent;
+        let u = 0;
+        finalPath.unshift(next);
+        // while (u < 20) {
+        window.requestAnimationFrame(() => {
+        while (next.parent !== start) {
+            u++;
+            next.highlightPath(this.rows, this.columns);
+            next = next.parent;
+            finalPath.unshift(next);
+            // next = next.parent;            
+        }
+    })
+        console.log(finalPath);
+        return 0;
+    }
 }
 
 class Cell {
@@ -81,7 +186,11 @@ class Cell {
             rightWall : true,
             bottomWall : true,
             leftWall : true
-        }
+        };
+        this.fValue;
+        this.gValue;
+        this.hValue;
+        this.parent;
     }
 
     checkNeighbors(rows, columns) {
@@ -103,6 +212,29 @@ class Cell {
         if (neighbours.length !== 0) {
             let random = Math.floor(Math.random() * neighbours.length);
             return neighbours[random];
+        } else {
+            return undefined;
+        }
+    }
+
+    checkNeighborsAStar(rows, columns) {
+        let grid = this.parentGrid;
+        let row = this.rowNum;
+        let col = this.colNum;
+        let neighbours = [];
+
+        let top = row !== 0 ? grid[row - 1][col] : undefined;
+        let right = col !== columns - 1 ? grid[row][col + 1] : undefined;
+        let bottom = row !== rows - 1 ? grid[row + 1][col] : undefined;
+        let left = col !== 0 ? grid[row][col - 1] : undefined;
+
+        if (top && !top.visited && !grid[row][col].walls.topWall) neighbours.push(top);
+        if (right && !right.visited && !grid[row][col].walls.rightWall) neighbours.push(right);
+        if (bottom && !bottom.visited && !grid[row][col].walls.bottomWall) neighbours.push(bottom);
+        if (left && !left.visited && !grid[row][col].walls.leftWall) neighbours.push(left);
+        
+        if (neighbours.length !== 0) {
+            return neighbours;
         } else {
             return undefined;
         }
@@ -140,7 +272,23 @@ class Cell {
         let x = (this.colNum * this.parentHorizSize) / columns + 1;
         let y = (this.rowNum * this.parentVertSize) / rows + 1;
 
-        ctx.fillStyle = "purple";
+        ctx.fillStyle = "green";
+        ctx.fillRect(x, y, this.parentHorizSize / columns - 1, this.parentVertSize / rows - 3)
+    }
+
+    highlightAStar(rows, columns) {
+        let x = (this.colNum * this.parentHorizSize) / columns + 1;
+        let y = (this.rowNum * this.parentVertSize) / rows + 1;
+
+        ctx.fillStyle = "#ADD8E6";
+        ctx.fillRect(x, y, this.parentHorizSize / columns - 1, this.parentVertSize / rows - 3)
+    }
+
+    highlightPath(rows, columns) {
+        let x = (this.colNum * this.parentHorizSize) / columns + 1;
+        let y = (this.rowNum * this.parentVertSize) / rows + 1;
+
+        ctx.fillStyle = "red";
         ctx.fillRect(x, y, this.parentHorizSize / columns - 1, this.parentVertSize / rows - 3)
     }
 
@@ -195,8 +343,8 @@ class Cell {
 // let r = document.getElementById("rows").value;
 // let c = document.getElementById("columns").value;
 
-// console.log(r);
-// console.log(c);
+// //console.log(r);
+// //console.log(c);
 
 // let newMaze = new Maze(10, 10);
 // newMaze.setup();
