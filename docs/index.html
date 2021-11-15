@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Maze Maker and Solver</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <h1>MAZE MAKER</h1>
+        <div class="form">
+            <label for="rows">Rows:</label>
+                <input id="rows" name="rows" type="number" step="5" min="5" max="150" value="10" required>
+            <label for="columns">Columns:</label>
+                <input id="columns" name="columns" type="number" step="5" min="5" max="150" value="10" required>
+            <br>
+            <br>
+            <button onclick="newMaze = new Maze(document.getElementById('rows').value, document.getElementById('columns').value)">Create Maze</button>
+        </div>
+        <br>
+        <canvas class="maze"></canvas>
+        <br>
+        <button onclick='newMaze.aStar()'>Solve</button>
+        <script src="maze.js" async defer></script>
+        <!-- <script src="maze_solver.js" async defer></script> -->
+    </body>
+</html>
