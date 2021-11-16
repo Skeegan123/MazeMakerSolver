@@ -280,7 +280,7 @@ class Cell {
         let x = (this.colNum * this.parentHorizSize) / columns + 1;
         let y = (this.rowNum * this.parentVertSize) / rows + 1;
 
-        ctx.fillStyle = "#ADD8E6";
+        ctx.fillStyle = "blue";
         ctx.fillRect(x, y, this.parentHorizSize / columns - 1, this.parentVertSize / rows - 3)
     }
 
